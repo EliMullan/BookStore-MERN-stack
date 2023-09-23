@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
-const bookSchema = moongoose.Schema(
+const bookSchema = mongoose.Schema(
     {
         title: {
             type: String,
             required: true,
         },
         author: {
-            type: string,
+            type: String,
             required: true,
         },
         publishYear: {
-            type: number,
+            type: Number,
             required: true
         }
     },
