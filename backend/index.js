@@ -11,11 +11,13 @@ app.get('/', (request, response) => {
     return response.status(234).send("Welcome to MERN stack tutorial");
 })
 
-//create book 
+//route for create book 
 app.post('/books', async (request, response) => {
   try {
     if(!request.body.title || !request.body.author || !request.body.publishYear) {
-     return response.status(400).send({message: "Send all required fields: title, author, publishYear"}) 
+     return response.status(400).send({
+      message: "Send all required fields: title, author, publishYear"
+    }) 
     }
     const newBook = {
       title: request.body.title,
@@ -31,7 +33,7 @@ app.post('/books', async (request, response) => {
   }
 })
 
-//get all books
+//route fo get all books
 app.get('/books', async (request, response) => {
   try {
     const books = await Book.find({}); // pass Book.find an empty object to return all books
@@ -45,6 +47,44 @@ app.get('/books', async (request, response) => {
     response.status(500).send({message: error.message});
   }
 })
+
+//route for get book by id
+app.get('/books/:id', async (request, response) => {
+  try {
+    const {id} = request.params;
+    const book = await Book.findById(id); 
+    return response.status(200).json(book);
+
+  } catch (error) {
+    console.log(error);
+    response.status(500).send({message: error.message});
+  }
+})
+
+//route for update a book
+app.put('/books/:id', async (request, response) => {
+  try {
+    if(!request.body.title || !request.body.author || !request.body.publishYear) {
+      return response.status(400).send({
+        message: "Send all required fields: title, author, publishYear"
+      }) 
+     }
+     const {id} = request.params;
+     
+     const result = await Book.findByIdAndUpdate(id, request.body); 
+
+     if(!result) {
+      return response.status(404).json({message: "Book not found"});
+     }
+     return response.status(200).send({message: "Book updated succesfully"});
+
+  } catch (error) {
+    console.log(error);
+    return response.status(500).send({message: error.message});
+  }
+})
+
+
 
 mongoose
   .connect(mongoDBURL)
